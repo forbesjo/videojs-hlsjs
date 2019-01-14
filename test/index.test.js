@@ -6,8 +6,6 @@ import videojs from 'video.js';
 
 import HlsjsSourceHandler from '../src/index';
 
-const Player = videojs.getComponent('Player');
-
 QUnit.test('the environment is sane', function(assert) {
   assert.strictEqual(typeof Array.isArray, 'function', 'es5 exists');
   assert.strictEqual(typeof sinon, 'object', 'sinon exists');
@@ -16,24 +14,21 @@ QUnit.test('the environment is sane', function(assert) {
 });
 
 QUnit.module('videojs-hlsjs', {
+  before() {
+    this.fixture = document.createElement('div');
+    document.body.appendChild(this.fixture);
+  },
 
   beforeEach() {
-
-    // Mock the environment's timers because certain things - particularly
-    // player readiness - are asynchronous in video.js 5. This MUST come
-    // before any player is created; otherwise, timers could get created
-    // with the actual timer methods!
-    this.clock = sinon.useFakeTimers();
-
-    this.fixture = document.getElementById('qunit-fixture');
     this.video = document.createElement('video');
     this.fixture.appendChild(this.video);
-    this.player = videojs(this.video);
+    this.player = videojs(this.video, {
+      muted: true
+    });
   },
 
   afterEach() {
     this.player.dispose();
-    this.clock.restore();
   }
 });
 
@@ -43,4 +38,26 @@ QUnit.test('registers itself with video.js', function(assert) {
     'videojs-hlsjs',
     'videojs-hlsjs plugin was registered first'
   );
+});
+
+QUnit.test('plays', function(assert) {
+  assert.expect(1);
+  const done = assert.async();
+
+  this.player.src({
+    src: 'https://video-dev.github.io/streams/x36xhzz/x36xhzz.m3u8',
+    type: 'application/x-mpegURL',
+    hlsjs: {
+      debug: true
+    }
+  });
+
+  this.player.on('timeupdate', () => {
+    if (this.player.currentTime() > 1) {
+      assert.ok(true, 'played for at least one second');
+      done();
+    }
+  });
+
+  this.player.play();
 });

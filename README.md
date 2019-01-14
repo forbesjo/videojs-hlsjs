@@ -1,6 +1,20 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+
+- [videojs-hlsjs](#videojs-hlsjs)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [`<script>` Tag](#script-tag)
+    - [Browserify/CommonJS](#browserifycommonjs)
+    - [RequireJS/AMD](#requirejsamd)
+  - [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # videojs-hlsjs
 
-
+Source handler for [hls.js][hlsjs]
 
 ## Installation
 
@@ -22,7 +36,10 @@ This is the simplest case. Get the script in whatever way you prefer and include
 <script>
   var player = videojs('my-video');
 
-  player.hlsjs();
+  player.src({
+    src: 'https://video-dev.github.io/streams/x36xhzz/x36xhzz.m3u8',
+    type: 'application/x-mpegURL'
+  });
 </script>
 ```
 
@@ -33,14 +50,15 @@ When using with Browserify, install videojs-hlsjs via npm and `require` the plug
 ```js
 var videojs = require('video.js');
 
-// The actual plugin function is exported by this module, but it is also
-// attached to the `Player.prototype`; so, there is no need to assign it
-// to a variable.
+// The source handler is automatically registered
 require('videojs-hlsjs');
 
 var player = videojs('my-video');
 
-player.hlsjs();
+player.src({
+  src: 'https://video-dev.github.io/streams/x36xhzz/x36xhzz.m3u8',
+  type: 'application/x-mpegURL'
+});
 ```
 
 ### RequireJS/AMD
@@ -51,7 +69,10 @@ When using with RequireJS (or another AMD library), get the script in whatever w
 require(['video.js', 'videojs-hlsjs'], function(videojs) {
   var player = videojs('my-video');
 
-  player.hlsjs();
+  player.src({
+    src: 'https://video-dev.github.io/streams/x36xhzz/x36xhzz.m3u8',
+    type: 'application/x-mpegURL'
+  });
 });
 ```
 
@@ -61,3 +82,4 @@ MIT. Copyright (c) jforbes &lt;jforbes@brightcove.com&gt;
 
 
 [videojs]: http://videojs.com/
+[hlsjs]: https://github.com/video-dev/hls.js/
